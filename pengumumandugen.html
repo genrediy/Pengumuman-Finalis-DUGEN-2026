@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman Finalis Duta Genre DIY</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- VARIABLE TEMA DINAMIS --- */
+        :root {
+            /* Warna Default (Biru Request: #249bd7) */
+            --theme-color: #249bd7;
+            --theme-grad: linear-gradient(135deg, #60c1f5 0%, #249bd7 100%);
+            --theme-bg: #f0f8fc;
+            
+            --text-dark: #2d3436;
+            --text-light: #ffffff;
+            --shadow-color: rgba(36, 155, 215, 0.3);
+        }
+
+        /* Tema Ketika LOLOS (Hijau) */
+        body.theme-lolos {
+            --theme-color: #00b894;
+            --theme-grad: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+            --theme-bg: #e8f8f5;
+            --shadow-color: rgba(0, 184, 148, 0.3);
+        }
+
+        /* Tema Ketika TIDAK LOLOS (Merah/Pink Pastel) */
+        body.theme-gagal {
+            --theme-color: #ff7675;
+            --theme-grad: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);
+            --theme-bg: #fdf2f2;
+            --shadow-color: rgba(255, 118, 117, 0.3);
+        }
+
+        /* --- STYLING DASAR --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--theme-bg);
+            background-image: radial-gradient(var(--theme-color) 1px, transparent 1px);
+            background-size: 25px 25px;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+            transition: all 0.5s ease-in-out; /* Animasi transisi warna background */
+        }
+
+        .container {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px var(--shadow-color);
+            overflow: hidden;
+            position: relative;
+            transition: box-shadow 0.5s ease-in-out;
+            z-index: 10;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            background-image: var(--theme-grad);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .header img {
+            max-width: 100px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.2));
+            transition: transform 0.3s;
+        }
+
+        .header img:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .content-body {
+            padding: 30px;
+        }
+
+        /* --- TIMER & SKIP BUTTON --- */
+        #countdown-container {
+            text-align: center;
+            padding: 20px;
+            border-radius: 20px;
+            background: rgba(36, 155, 215, 0.05);
+            border: 2px dashed var(--theme-color);
+            margin-bottom: 20px;
+        }
+
+        #countdown-container h3 {
+            font-size: 16px;
+            margin-top: 0;
+            color: var(--theme-color);
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .time-box {
+            background-image: var(--theme-grad);
+            color: white;
+            width: 65px;
+            padding: 10px 0;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .time-box div {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .time-box span {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .btn-skip {
+            background-color: transparent;
+            color: var(--theme-color);
+            border: 2px solid var(--theme-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-skip:hover {
+            background-color: var(--theme-color);
+            color: white;
+        }
+
+        /* --- FORM PENCARIAN --- */
+        #form-container {
+            display: none; 
+            animation: fadeIn 0.5s ease;
+        }
+
+        .instruction-text {
+            text-align: center;
+            color: #555;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+            padding-left: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            box-sizing: border-box;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s;
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--theme-color);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(36, 155, 215, 0.15);
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 15px;
+            background-image: var(--theme-grad);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background-image 0.5s;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 8px 20px var(--shadow-color);
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-main:active {
+            transform: translateY(1px);
+        }
+
+        /* --- TAMPILAN HASIL (RESULT) --- */
+        #result-container {
+            display: none;
+            text-align: center;
+        }
+
+        .result-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        #result-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            color: var(--theme-color);
+            transition: color 0.5s;
+        }
+
+        .data-display {
+            background: rgba(0,0,0,0.03);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+            border-left: 5px solid var(--theme-color);
+            transition: border-color 0.5s;
+        }
+
+        .data-display p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        #result-message {
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid #ddd;
+            background-image: none;
+            box-shadow: none;
+            font-size: 14px;
+            padding: 12px 20px;
+        }
+
+        .btn-back:hover {
+            background: #f0f0f0;
+            transform: none;
+        }
+
+        /* --- ANIMASI KEYFRAMES --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animasi Lolos (Meloncat Senang) */
+        .anim-lolos {
+            animation: bounceIn 0.8s cubic-bezier(0.28, 0.84, 0.42, 1);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            70% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        /* Animasi Gagal (Gemetar Halus) */
+        .anim-gagal {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .footer-text {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--theme-color);
+            margin-top: 20px;
+            letter-spacing: 1px;
+            transition: color 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-card">
+        <div class="header">
+            <img src="logo adujak PNG tru.PNG" alt="Logo Adujak Genre DIY">
+            <h1>PENGUMUMAN<br>FINALIS DUTA Genre DIY</h1>
+            <p>Pemilihan Duta Genre Daerah Istimewa Yogyakarta 2026</p>
+        </div>
+
+        <div class="content-body">
+            <div id="countdown-container">
+                <h3>⏳ Menunggu Waktu Pengumuman ⏳</h3>
+                <div class="timer" id="timer">
+                    <div class="time-box"><div id="days">00</div><span>Hari</span></div>
+                    <div class="time-box"><div id="hours">00</div><span>Jam</span></div>
+                    <div class="time-box"><div id="minutes">00</div><span>Menit</span></div>
+                    <div class="time-box"><div id="seconds">00</div><span>Detik</span></div>
+                </div>
+                <button class="btn-skip" onclick="skipTimer()">Gak Sabar? Skip Aja! ⏩</button>
+            </div>
+
+            <div id="form-container">
+                <p class="instruction-text">Masukkan Nomor Urut dan Nama kamu untuk mengecek hasil seleksi.</p>
+                <div class="form-group">
+                    <label for="no_urut">Nomor Urut Peserta</label>
+                    <input type="text" id="no_urut" placeholder="Contoh: DIY-001" required>
+                </div>
+                <div class="form-group">
+                    <label for="nama_peserta">Nama Lengkap</label>
+                    <input type="text" id="nama_peserta" placeholder="Ketik nama lengkap..." required>
+                </div>
+                <button class="btn-main" onclick="cekHasil()">🔍 CEK HASIL SEKARANG</button>
+            </div>
+
+            <div id="result-container">
+                <div class="result-icon" id="res-icon"></div>
+                <h2 id="result-title"></h2>
+                
+                <div class="data-display">
+                    <p><strong>No. Urut :</strong> <span id="res-no"></span></p>
+                    <p><strong>Nama     :</strong> <span id="res-nama"></span></p>
+                </div>
+                
+                <p id="result-message"></p>
+                <button class="btn-main btn-back" onclick="kembali()">⬅ Cek Peserta Lain</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-text">GENERASI BERENCANA DIY</div>
+
+    <script>
+        // --- 1. PENGATURAN WAKTU PENGUMUMAN ---
+        // Contoh waktu: 5 April 2026
+        const countDownDate = new Date("April 5, 2026 10:00:00").getTime();
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = countDownDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerHTML = days.toString().padStart(2, '0');
+                document.getElementById("hours").innerHTML = hours.toString().padStart(2, '0');
+                document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, '0');
+                document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
+
+                if (distance < 0) {
+                    skipTimer(); // Otomatis skip jika waktu habis
+                }
+            }, 1000);
+        }
+        
+        startTimer();
+
+        // --- FUNGSI SKIP TIMER KETIKA TOMBOL DIKLIK ---
+        function skipTimer() {
+            clearInterval(timerInterval);
+            document.getElementById("countdown-container").style.display = "none";
+            document.getElementById("form-container").style.display = "block";
+        }
+
+        // --- 2. DATA DUMMY PESERTA ---
+        const dataPeserta = [
+            { no_urut: "DIY-001", nama: "Noer Ahmad S", status: "LOLOS" },
+            { no_urut: "DIY-002", nama: "Andhini Dwi", status: "TIDAK LOLOS" },
+            { no_urut: "DIY-003", nama: "Wilyam Yazid H", status: "LOLOS" },
+            { no_urut: "DIY-004", nama: "Adujak", status: "TIDAK LOLOS" }
+        ];
+
+        // --- 3. FUNGSI CEK HASIL & GANTI TEMA ---
+        function cekHasil() {
+            const inputNoUrut = document.getElementById("no_urut").value.trim().toUpperCase();
+            const inputNama = document.getElementById("nama_peserta").value.trim().toLowerCase();
+
+            if(inputNoUrut === "" || inputNama === "") {
+                alert("Isi dulu dong Nomor Urut dan Namanya! 😊");
+                return;
+            }
+
+            const peserta = dataPeserta.find(p => 
+                p.no_urut.toUpperCase() === inputNoUrut && 
+                p.nama.toLowerCase() === inputNama
+            );
+
+            // Hide form, show result
+            document.getElementById("form-container").style.display = "none";
+            const resultContainer = document.getElementById("result-container");
+            resultContainer.style.display = "block";
+
+            // Hapus animasi sebelumnya agar bisa diulang
+            resultContainer.classList.remove("anim-lolos", "anim-gagal");
+            
+            // Hapus tema sebelumnya
+            document.body.classList.remove("theme-lolos", "theme-gagal");
+
+            // Masukkan data ke kotak hasil
+            document.getElementById("res-no").innerText = inputNoUrut;
+            document.getElementById("res-nama").innerText = document.getElementById("nama_peserta").value;
+
+            const resultTitle = document.getElementById("result-title");
+            const resultMessage = document.getElementById("result-message");
+            const resultIcon = document.getElementById("res-icon");
+
+            // Trik ringan untuk memicu ulang animasi CSS
+            void resultContainer.offsetWidth;
+
+            if (peserta) {
+                if(peserta.status === "LOLOS") {
+                    // BERUBAH JADI TEMA HIJAU + ANIMASI MELONCAT
+                    document.body.classList.add("theme-lolos");
+                    resultContainer.classList.add("anim-lolos");
+                    
+                    resultIcon.innerText = "✨🎉✨";
+                    resultTitle.innerText = "SELAMAT!";
+                    resultMessage.innerHTML = "Yeay! Kamu dinyatakan <strong>LOLOS</strong> menjadi Finalis Duta Genre DIY. Siapkan dirimu untuk tahap selanjutnya, ya!";
+                } else {
+                    // BERUBAH JADI TEMA MERAH + ANIMASI GEMETAR
+                    document.body.classList.add("theme-gagal");
+                    resultContainer.classList.add("anim-gagal");
+                    
+                    resultIcon.innerText = "🥺💔";
+                    resultTitle.innerText = "YAAAH...";
+                    resultMessage.innerHTML = "Mohon maaf, kamu <strong>BELUM LOLOS</strong> pada seleksi kali ini. Tetap semangat, perjalananmu masih panjang. Salam Genre!";
+                }
+            } else {
+                // JIKA DATA TIDAK DITEMUKAN (TETAP TEMA MERAH)
+                document.body.classList.add("theme-gagal");
+                resultContainer.classList.add("anim-gagal");
+                
+                resultIcon.innerText = "🔍❓";
+                resultTitle.innerText = "TIDAK DITEMUKAN";
+                resultMessage.innerText = "Coba cek lagi Nomor Urut dan Nama kamu, sepertinya ada yang salah ketik.";
+                document.getElementById("res-nama").innerText = "-";
+            }
+        }
+
+        // --- 4. FUNGSI KEMBALI (RESET TEMA KE BIRU) ---
+        function kembali() {
+            // Hapus tema hasil, kembali ke biru default
+            document.body.classList.remove("theme-lolos", "theme-gagal");
+            
+            document.getElementById("result-container").style.display = "none";
+            document.getElementById("form-container").style.display = "block";
+            
+            document.getElementById("no_urut").value = "";
+            document.getElementById("nama_peserta").value = "";
+        }
+    </script>
+</body>
+</html>
