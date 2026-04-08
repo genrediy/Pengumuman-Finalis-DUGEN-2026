@@ -104,7 +104,7 @@
             padding: 30px;
         }
 
-        /* --- TIMER & SKIP BUTTON --- */
+        /* --- TIMER --- */
         #countdown-container {
             text-align: center;
             padding: 20px;
@@ -124,7 +124,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
 
         .time-box {
@@ -147,24 +147,6 @@
             font-weight: 600;
             letter-spacing: 1px;
             opacity: 0.9;
-        }
-
-        .btn-skip {
-            background-color: transparent;
-            color: var(--theme-color);
-            border: 2px solid var(--theme-color);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-skip:hover {
-            background-color: var(--theme-color);
-            color: white;
         }
 
         /* --- FORM PENCARIAN --- */
@@ -193,6 +175,7 @@
             padding-left: 5px;
         }
 
+        /* Input standar untuk Nama Lengkap */
         .form-group input {
             width: 100%;
             padding: 14px 20px;
@@ -210,6 +193,43 @@
             border-color: var(--theme-color);
             background-color: white;
             box-shadow: 0 0 0 4px rgba(36, 155, 215, 0.15);
+        }
+
+        /* Styling Form Group Nomor Urut (DIY-0XX) */
+        .input-group {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            background-color: #fafafa;
+            transition: all 0.3s;
+            padding-left: 20px;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--theme-color);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(36, 155, 215, 0.15);
+        }
+
+        .input-group .prefix {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+        .input-group input {
+            border: none;
+            background: transparent;
+            padding: 14px 20px 14px 2px;
+            box-shadow: none;
+            flex-grow: 1;
+        }
+
+        .input-group input:focus {
+            box-shadow: none;
+            border-color: transparent;
+            background-color: transparent;
         }
 
         .btn-main {
@@ -296,7 +316,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Animasi Lolos (Meloncat Senang) */
         .anim-lolos {
             animation: bounceIn 0.8s cubic-bezier(0.28, 0.84, 0.42, 1);
         }
@@ -308,7 +327,6 @@
             100% { transform: scale(1); }
         }
 
-        /* Animasi Gagal (Gemetar Halus) */
         .anim-gagal {
             animation: shake 0.5s ease-in-out;
         }
@@ -334,7 +352,7 @@
 
     <div class="container" id="main-card">
         <div class="header">
-            <img src="logo.png" alt="Logo Adujak Genre DIY">
+            <img src="logo adujak PNG tru.PNG" alt="Logo Adujak Genre DIY">
             <h1>PENGUMUMAN<br>FINALIS DUTA Genre DIY</h1>
             <p>Pemilihan Duta Genre Daerah Istimewa Yogyakarta 2026</p>
         </div>
@@ -348,14 +366,16 @@
                     <div class="time-box"><div id="minutes">00</div><span>Menit</span></div>
                     <div class="time-box"><div id="seconds">00</div><span>Detik</span></div>
                 </div>
-                <button class="btn-skip" onclick="skipTimer()">Gak Sabar? Skip Aja! ⏩</button>
             </div>
 
             <div id="form-container">
                 <p class="instruction-text">Masukkan Nomor Urut dan Nama kamu untuk mengecek hasil seleksi.</p>
                 <div class="form-group">
                     <label for="no_urut">Nomor Urut Peserta</label>
-                    <input type="text" id="no_urut" placeholder="Contoh: DIY-001" required>
+                    <div class="input-group">
+                        <span class="prefix">DIY-0</span>
+                        <input type="text" id="no_urut" placeholder="01" maxlength="2" required onkeypress="return /[0-9]/i.test(event.key)">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="nama_peserta">Nama Lengkap</label>
@@ -383,8 +403,8 @@
 
     <script>
         // --- 1. PENGATURAN WAKTU PENGUMUMAN ---
-        // Contoh waktu: 5 April 2026
-        const countDownDate = new Date("April 5, 2026 10:00:00").getTime();
+        // Diatur untuk hari Jumat, 10 April 2026 jam 19:00 WIB
+        const countDownDate = new Date("April 10, 2026 19:00:00").getTime();
         let timerInterval;
 
         function startTimer() {
@@ -403,14 +423,14 @@
                 document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, '0');
 
                 if (distance < 0) {
-                    skipTimer(); // Otomatis skip jika waktu habis
+                    skipTimer(); // Otomatis masuk ke form saat waktu habis
                 }
             }, 1000);
         }
         
         startTimer();
 
-        // --- FUNGSI SKIP TIMER KETIKA TOMBOL DIKLIK ---
+        // --- FUNGSI MUNCULKAN FORM (BERJALAN OTOMATIS) ---
         function skipTimer() {
             clearInterval(timerInterval);
             document.getElementById("countdown-container").style.display = "none";
@@ -427,10 +447,12 @@
 
         // --- 3. FUNGSI CEK HASIL & GANTI TEMA ---
         function cekHasil() {
-            const inputNoUrut = document.getElementById("no_urut").value.trim().toUpperCase();
+            // Gabungkan "DIY-0" dengan input dari peserta (2 digit)
+            const noUrutSuffix = document.getElementById("no_urut").value.trim();
+            const inputNoUrut = "DIY-0" + noUrutSuffix;
             const inputNama = document.getElementById("nama_peserta").value.trim().toLowerCase();
 
-            if(inputNoUrut === "" || inputNama === "") {
+            if(noUrutSuffix === "" || inputNama === "") {
                 alert("Isi dulu dong Nomor Urut dan Namanya! 😊");
                 return;
             }
